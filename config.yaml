@@ -13,7 +13,7 @@ model:
   n_heads: 8            # Number of attention heads
   n_layers: 6           # Number of transformer layers
   d_ff: 1024            # Feed-forward hidden dimension
-  dropout: 0.1          # Dropout probability
+  dropout: 0.3          # Dropout probability
   pad_idx: 0            # Will be set from dataset
 
 # Training Configuration
@@ -27,6 +27,14 @@ training:
 # Hardware Configuration
 hardware:
   save_dir: "checkpoints"
+
+# Inference Configuration
+inference:
+  checkpoint_path: "checkpoints/best_model.pt"
+  num_samples: 50
+  max_length: 30
+  temperature: 1.0
+  output_file: 'data/generated/dino.csv'
 
 # Experiment Configuration
 experiment:

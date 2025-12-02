@@ -47,6 +47,7 @@ class Trainer:
         self.scheduler = scheduler
         self.device = device
         self.save_dir = save_dir
+        self.best_model_path = f"{save_dir}/best_model.pt"
 
         # Training history
         self.train_losses = []
@@ -180,13 +181,23 @@ class Trainer:
         os.makedirs(self.save_dir, exist_ok=True)
 
         # Save only the best model
-        best_model_path = f"{self.save_dir}/best_model.pt"
         torch.save({
             'epoch': epoch,
             'model_state_dict': self.model.state_dict(),
             'loss': loss,
-        }, best_model_path)
+        }, self.best_model_path)
         print(f"New best model saved at epoch {epoch} with validation loss {loss:.4f}")
+
+    def load_best_model(self):
+        """
+        Load the best model from checkpoint.
+        """
+        if os.path.exists(self.best_model_path):
+            checkpoint = torch.load(self.best_model_path, map_location=self.device)
+            self.model.load_state_dict(checkpoint['model_state_dict'])
+            print(f"Loaded best model from epoch {checkpoint['epoch']} with loss {checkpoint['loss']:.4f}")
+        else:
+            print(f"No best model found at {self.best_model_path}, using current model weights")
 
     def generate_samples(self, dataset, num_samples: int = 5, max_length: int = 30, temperature: float = 1.0):
         """
@@ -261,6 +272,9 @@ class Trainer:
         print(f"Best validation loss: {self.best_val_loss:.4f} at epoch {self.best_epoch}")
         total_time = time.time() - start_time
         print(f"\nTraining completed in {total_time/3600:.2f} hours")
+
+        print("\nLoading best model for test evaluation...")
+        self.load_best_model()
 
         print("\nEvaluating on test set...")
         test_loss, test_perplexity = self.evaluate(mode="Testing")
