@@ -1,0 +1,33 @@
+# Data Configuration
+data:
+  csv_path: "data/processed/dino.csv"  # Update this path as needed
+  max_length: 30
+  train_split: 0.8
+  val_split: 0.1
+  batch_size: 32
+  num_workers: 4
+
+# Model Configuration
+model:
+  d_model: 256          # Model dimension
+  n_heads: 8            # Number of attention heads
+  n_layers: 6           # Number of transformer layers
+  d_ff: 1024            # Feed-forward hidden dimension
+  dropout: 0.1          # Dropout probability
+  pad_idx: 0            # Will be set from dataset
+
+# Training Configuration
+training:
+  num_epochs: 100
+  learning_rate: 0.0001
+  weight_decay: 0.00001
+  sample_interval: 5    # Generate samples every N epochs
+
+
+# Hardware Configuration
+hardware:
+  save_dir: "checkpoints"
+
+# Experiment Configuration
+experiment:
+  seed: 42
